@@ -8,8 +8,16 @@ import sys
 
 class DisplayManager(object):
     # Modes
-    SINGLE  = 1
-    DUAL    = 2
+    SINGLE  = 101
+    DUAL    = 102
+
+    # Type
+    INTERNAL    = 201
+    EXTERNAL    = 202
+
+    # Positions
+    INTERNAL_EXTERNAL   = 301
+    EXTERNAL_INTERNAL   = 302
 
     def __init__(self, args):
         # Logger
@@ -21,11 +29,13 @@ class DisplayManager(object):
         self.log.addHandler(handler)
 
         # Options
-        self.mode       = self.SINGLE
-        self.internal   = dict()
-        self.external   = dict()
-        self.verbose    = False
-        self.dryrun     = False
+        self.mode           = self.SINGLE
+        self.internal       = dict()
+        self.external       = dict()
+        self.primary        = self.INTERNAL
+        self.order          = self.INTERNAL_EXTERNAL
+        self.verbose        = False
+        self.dryrun         = False
 
         # Parse args and process options
         self.__process_opts(self.__parse_args(args))
@@ -40,7 +50,7 @@ class DisplayManager(object):
             self.log.info("Set to single display mode")
             self.__set_single()
         else:
-            self.log.info("Set to single display mode")
+            self.log.info("Set to dual display mode")
             self.__set_dual()
         self.log.info('Done!')
 
@@ -63,25 +73,42 @@ class DisplayManager(object):
         self.__syscall('xrandr --output %(name)s --mode %(resolution)s ' + 
             '--rate %(rate)s', self.external)
 
-        # Set laptop monitor to its best resolution.
+        # Set internal monitor to its best resolution.
         self.__syscall('xrandr --output %(name)s --mode %(resolution)s ' + 
             '--rate %(rate)s', self.internal)
 
-        # Set laptop monitor as your primary monitor.
-        self.__syscall('xrandr --output %(name)s --primary', self.internal)
+        # Set primary monitor.
+        primary = self.primary if self.primary else self.internal['name']
+        self.__syscall('xrandr --output %s --primary', (primary,))
 
-        # Put the laptop left, external monitor right
-        self.__syscall('xrandr --output %s --right-of %s', \
-            (self.external['name'], self.internal['name']))
+        # Decide which goes to the left or right
+        params = tuple()
+        if self.order == self.INTERNAL_EXTERNAL:
+            params = (self.external['name'], self.internal['name'])
+        else:
+            params = (self.internal['name'], self.external['name'])
+        self.__syscall('xrandr --output %s --right-of %s', params)
 
-        # Move LVDS1 to the bottom to make menu available
+        # Displays' position
+        horizontal_offset = 0
+        vertical_offset = 0
+
+        # Move internal to the bottom to make menu available if external height
+        # is bigger than internal
         external_height = int(self.external['resolution'].split('x')[1])
         internal_height = int(self.internal['resolution'].split('x')[1])
-        height_diff = external_height - internal_height
         if external_height > internal_height:
-            self.log.debug("Move internal to the bottom by %dpx", height_diff)
-            self.__syscall('xrandr --output %s --pos 0x%d', \
-                (self.internal['name'],height_diff,))
+            vertical_offset = external_height - internal_height
+            self.log.debug("Move internal display to the bottom by %dpx", \
+                vertical_offset)
+
+        # Move internal to the right if it's the rightmost display
+        if self.order == self.EXTERNAL_INTERNAL:
+            horizontal_offset = int(self.external['resolution'].split('x')[0])
+            self.log.debug("Move internal display to the right by %dpx", \
+                horizontal_offset)
+        self.__syscall('xrandr --output %s --pos %dx%d', \
+            (self.internal['name'], horizontal_offset, vertical_offset,))
 
     def __syscall(self, cmd, args = None):
         args = args if args else tuple()
@@ -101,9 +128,14 @@ class DisplayManager(object):
         parser.add_argument('-m', '--mode', default=self.SINGLE,
             help="display configuration: single or dual")
         parser.add_argument('-i', '--internal-output', 
-            help="internal display (default); sample format: HDMI1;1920x1080;60")
+            help="internal display (default); format is: \"HDMI1;1920x1080;60\"")
         parser.add_argument('-e', '--external-output', 
             help="external display; the same format as for internal one")
+        parser.add_argument('-p', '--primary', default=None,
+            help="define primary display using it's name, i.e. --primary \"HDMI1\"")
+        parser.add_argument('-o', '--order', default=None,
+            help="define display order: \"IE\" if internal on the left, " + 
+                "\"EI\" otherwise")
         parser.add_argument('-v', '--verbose', action='store_true', default=False,
             help="verbose")
         parser.add_argument('--dryrun', action='store_true', default=False,
@@ -134,6 +166,11 @@ class DisplayManager(object):
                     self.log.debug('External output fully specified')
                     self.external['resolution'] = params[1]
                     self.external['rate'] = params[2]
+            elif opt == 'primary':
+                self.primary = arg
+            elif opt == 'order' and arg and arg.lower() in ('ie', 'ei'):
+                self.order = self.INTERNAL_EXTERNAL if arg.lower() == 'ie' \
+                    else self.EXTERNAL_INTERNAL
             elif opt == 'dryrun':
                 self.dryrun = arg
                 if self.dryrun:
