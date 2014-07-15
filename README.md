@@ -4,14 +4,9 @@ README
 This script was written for my own needs (extending Xubuntu desktop with external display) during one evening, so it's not very configurable. Most important facts are:
 - it handles only two displays (I don't need more ;) ), 
 - they are aligned to the bottom by default
-- script can crash because of improper parameters etc. - there are some defaults 
-    or validation provided by argparse, but it's definitely not enough to be proud 
-    of how it works
-- you can use it in any way you need, as long as it stays free: you can even 
-    print it and feed your dog with it if you want to ;)
-- I did a few tests on my own computer with HDMI and VGA external display and 
-    everything was OK, but just in case: you use it on your own risk ;) 
-
+- script can crash because of improper parameters etc. - there are some defaults or validation provided by argparse, but it's definitely not enough to be proud of how it works
+- you can use it in any way you need, as long as it stays free: you can even print it and feed your dog with it if you want to ;)
+- I did a few tests on my own computer with HDMI and VGA external display and everything was OK, but just in case: you use it on your own risk ;) 
 
 Example:
 --------
