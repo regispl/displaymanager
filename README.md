@@ -49,25 +49,29 @@ has to be accessible for user to access the menu.
 
 3. The solution is (verbose is - obviously - optional):
 
+```bash
 ./displaymanager.py -m dual -i "LVDS1;1366x768;60" -e "HDMI1;1920x1080;60" --verbose
+```
 
 "LVDS1;1366x768;60" means: 
 - display name: LVDS1
 - resolution: 1366x768
 - refresh rate: 60 Hz
 
-Analogically for HDMI1.
+Analogously for HDMI1.
 
 4. Before (or after) unplugging the external monitor the default state can be 
 restored with:
 
+```bash
 ./displaymanager.py -m single -i "LVDS1;1366x768;60" -e "HDMI1" --verbose
+```
 
 The '-e' parameter is needed only for turning the display off - there's no need 
 to provide other details like resolution. It works ONLY for external display and 
 ONLY when switching to 'single' mode.
 
-5. Check ./displaymanager.py -h for a bit (really a little bit) more details and info.
+5. Check `./displaymanager.py -h` for a bit (really a little bit) more details and info.
 
 Tip 1: If you want to have external on the right, use: -o "EI" (default is "IE") 
 
