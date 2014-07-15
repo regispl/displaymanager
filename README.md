@@ -11,7 +11,7 @@ This script was written for my own needs (extending Xubuntu desktop with externa
 Example:
 --------
 
-1. There are two displays - LVDS1 and HDMI1:
+### There are two displays - LVDS1 and HDMI1:
 
     ```bash
     michal@laptop:~/displaymanager$ xrandr
@@ -34,8 +34,9 @@ Example:
     DP1 disconnected (normal left inverted right x axis y axis)
     ```
 
-2. We want to have desktop like this with LVDS1 as primary:
+### We want to have desktop like this with LVDS1 as primary:
 
+```bash
                          ,-----------------------.
                          |                       |
         ,---------------.|                       |
@@ -43,11 +44,12 @@ Example:
         |     LVDS1     ||                       |
         |               ||                       |
         '---------------''-----------------------'
+```
 
 Displays need to be aligned this way because the bottom of the primary screen
 has to be accessible for user to access the menu.
 
-3. The solution is (verbose is - obviously - optional):
+### The solution is (verbose is - obviously - optional):
 
 ```bash
 ./displaymanager.py -m dual -i "LVDS1;1366x768;60" -e "HDMI1;1920x1080;60" --verbose
@@ -60,7 +62,7 @@ has to be accessible for user to access the menu.
 
 Analogously for HDMI1.
 
-4. Before (or after) unplugging the external monitor the default state can be 
+### Before (or after) unplugging the external monitor the default state can be 
 restored with:
 
 ```bash
@@ -71,7 +73,7 @@ The '-e' parameter is needed only for turning the display off - there's no need
 to provide other details like resolution. It works ONLY for external display and 
 ONLY when switching to 'single' mode.
 
-5. Check `./displaymanager.py -h` for a bit (really a little bit) more details and info.
+### Check `./displaymanager.py -h` for a bit (really a little bit) more details and info.
 
 Tip 1: If you want to have external on the right, use: -o "EI" (default is "IE") 
 
