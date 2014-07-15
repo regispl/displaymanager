@@ -13,6 +13,7 @@ Example:
 
 1. There are two displays - LVDS1 and HDMI1:
 
+    ```bash
     michal@laptop:~/displaymanager$ xrandr
     Screen 0: minimum 320 x 200, current 1366 x 768, maximum 8192 x 8192
     LVDS1 connected 1366x768+0+0 (normal left inverted right x axis y axis) 293mm x 164mm
@@ -31,6 +32,7 @@ Example:
        640x480        75.0     60.0  
        720x400        70.1  
     DP1 disconnected (normal left inverted right x axis y axis)
+    ```
 
 2. We want to have desktop like this with LVDS1 as primary:
 
