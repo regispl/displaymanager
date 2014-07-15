@@ -1,8 +1,7 @@
-!!! FYI:
+README
+======
 
-This script was written for my own needs (extending Xubuntu desktop with external 
-display) during one evening, so it's not very configurable. Most important
-facts are:
+This script was written for my own needs (extending Xubuntu desktop with external display) during one evening, so it's not very configurable. Most important facts are:
 - it handles only two displays (I don't need more ;) ), 
 - they are aligned to the bottom by default
 - script can crash because of improper parameters etc. - there are some defaults 
@@ -14,7 +13,8 @@ facts are:
     everything was OK, but just in case: you use it on your own risk ;) 
 
 
-*** Example:
+Example:
+--------
 
 1. There are two displays - LVDS1 and HDMI1:
 
