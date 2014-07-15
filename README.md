@@ -81,9 +81,11 @@ Tip 2: using '--verbose' together with '--dryrun' makes it most useful to learn 
 it works.
 
 
-Author:
+##### Author 
 Michał Michalski <displaymanager@michalski.im>
+
 http://devblog.michalski.im
+
 https://github.com/regispl
 
 Feel free to contact me with a feedback.
